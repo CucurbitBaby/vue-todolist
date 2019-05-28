@@ -13,7 +13,7 @@
       <h2 onclick="save()">正在进行 <span id="todocount">{{startCount}}</span></h2>
       <ol class="finish">
         <li v-for="(item,key) in list" v-if="!item.checked">
-          <input type="checkbox" v-model="item.checked">
+          <input type="checkbox" v-model="item.checked" @change="saveList()">
           <p>{{item.title}}</p>
           <a @click="removeData(key)"></a>
         </li>
@@ -22,7 +22,7 @@
       <h2>已完成 <span id="todocount1">{{endCount}}</span></h2>
       <ul id="donelist">
         <li v-for="(item,key) in list" v-if="item.checked">
-          <input type="checkbox" v-model="item.checked"> 
+          <input type="checkbox" v-model="item.checked" @change="saveList()"> 
           <p>{{item.title}}</p>
           <a @click="removeData(key)"></a>
         </li>
@@ -36,7 +36,7 @@
 
 <script>
 
-
+import storage from './model/storage.js';
 export default {
   name: 'app',
   data () {
@@ -81,13 +81,12 @@ export default {
         checked:false
       });
       this.todo = '';
-    },
-    removeData(listKey){
-      this.list.splice(listKey,1)
+      storage.set('list',this.list);
     },
     removeList(){
       // console.log('我被触发了')
       this.list = [];
+      storage.set('list',this.list);
     },
     getlist:function(){
       console.log(this.list);
@@ -102,9 +101,22 @@ export default {
       return {
           nums:counts,
       };
+    },
+    removeData(listKey){
+      this.list.splice(listKey,1)
+      storage.set('list',this.list);
+    },
+    saveList(){
+      storage.set('list',this.list);
     }
   },
   mounted:function(){
+    var list=storage.get('list');
+
+    if(list){  /*注意判断*/
+      this.list=list;
+    }
+
     this.startCount = this.listCount(this.list,"checked",false).nums;
     this.endCount = this.listCount(this.list,"checked",true).nums;
     window.clear = this.removeList;
