@@ -1,4 +1,6 @@
-# vue-demo02
+# vue-todolist
+这是一个vue的todolist 希望对初学者有帮助
+如果遇问题与指正请联系cucurbitbaby@163.com或留言
 
 > A Vue.js project
 
